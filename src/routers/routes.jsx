@@ -1,35 +1,27 @@
-import React from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from '../components/Header';
 import HomePage from '../pages/HomePage';
 import Login from '../pages/Login';
-// / PROVIDER
-
+import PrivateRoute from '../utils/PrivateRoute';
+import { AuthProvider } from '../context/AuthContext';
 
 const MyRoutes = () => {
-    // / Verificar
-    const authenticated = false;
 
     return (
         <BrowserRouter>
-            <Header />
-            <Routes>
-                
+            <AuthProvider>
+                <Header />
+                <Routes>
                     {/* Ruta de inicio de sesión */}
                     <Route path='/login' element={<Login />} />
 
-                    {/* Ruta privada */}
-                    <Route
-                        path='/'
-                        element={
-                            authenticated ? (
-                                <HomePage />
-                            ) : (
-                                <Navigate to='/login' />
-                            )
-                        }
-                    />
-            </Routes>
+                    {/* Ruta privada de esta forma lo usamos*/}
+
+                    <Route path='/' element={<PrivateRoute />}>
+                        <Route index element={<HomePage />}></Route>
+                    </Route>
+                </Routes>
+            </AuthProvider>
         </BrowserRouter>
     );
 };

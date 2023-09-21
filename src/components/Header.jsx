@@ -4,15 +4,17 @@ import AuthContext from '../context/AuthContext';
 
 const Header = () => {
 
-  let {name} = useContext(AuthContext)
+  let { user, logoutUser } = useContext(AuthContext);
 
   return (
       <div>
           <Link to='/'> Home </Link>
           <span> | </span>
-          <Link to='/login'> Login </Link>
 
-          <p> Hola {name} </p>
+          {/* Usando la función para cerrar sección */}
+          {user ? <p onClick={logoutUser}>Logout</p> : <Link to='/login'> Login </Link>}
+
+          {user && <p> Hola {user.username} </p>}
       </div>
   );
 }
