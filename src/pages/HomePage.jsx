@@ -2,20 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/AuthContext';
 
 const HomePage = () => {
-    /// Este es un buen logar para consultar las notas dado a que solo las necesitamos aquí
-
     let [notes, setNotes] = useState([]);
 
-    let { authTokens } = useContext(AuthContext);
+    let { authTokens, logoutUser } = useContext(AuthContext);
 
-    console.log("Tokens" ,authTokens)
+    console.log('Tokens', authTokens);
 
     useEffect(() => {
-        /// Ejecutando el método para obtener las notas
         getNotes();
     }, []);
 
-    /// Haciendo la solicitud al back para obtener las notas del usuario actual
     let getNotes = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/notes/', {
             method: 'GET',
@@ -26,7 +22,13 @@ const HomePage = () => {
         });
 
         let data = await response.json();
-        setNotes(data);
+
+        /// Con este if se solucionara este error por que lo a obligar a iniciar sección de nuevo 
+        if (response.status === 200) {
+            setNotes(data);
+        }else if (response.statusText === 'Unauthorized') {
+            logoutUser();
+        }
     };
 
     return (

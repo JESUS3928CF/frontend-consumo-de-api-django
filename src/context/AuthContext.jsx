@@ -82,7 +82,8 @@ export const AuthProvider = ({ children }) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        refresh: authTokens.refresh,
+                        /// Si no existe el token destruir la sección 
+                        refresh: authTokens?.refresh,
                     }),
                 }
             );
@@ -94,7 +95,6 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
 
             if (response.status === 200) {
-                /// Si la respuesta es exitosa actualizar el token el el from
                 setAuthTokens(data);
                 setUser(jwt_decode(data.access));
                 localStorage.setItem('authTokens', JSON.stringify(data));
@@ -106,20 +106,28 @@ export const AuthProvider = ({ children }) => {
             console.error('Error:', error);
             alert('Ocurrió un error al intentar actualizar el token');
         }
+
+        /// 2: Esto es para que no carge infinitamente
+        if(loading){
+            setLoading(false)
+        }
     };
 
     let contextData = {
         user,
         loginUser,
         logoutUser,
-        /// Haciendo disponible los tokens
         authTokens,
     };
 
-    /// Para poder detectar cuando actualizar el token fresh
+    //* Para poder detectar cuando actualizar el token fresh
     useEffect(() => {
 
-        /// Contador  para actualizar el token
+        /// 1: si entramos y nos encontramos que esta cargando es true update el token
+        if(loading){
+            updateToken();
+        }
+
         let fourMinutes = 1000 * 60 * 4;
 
         let interval = setInterval( () => {
@@ -132,9 +140,10 @@ export const AuthProvider = ({ children }) => {
 
     }, [authTokens, loading]); //- dependencias para actualizar el token
 
+    /// 4: Si aun no se carga la actualización del token no renderizar nada en la vista es decir no hacer disponible la info del provider
     return (
         <AuthContext.Provider value={contextData}>
-            {children}
+            {loading? null : children}
         </AuthContext.Provider>
     );
 };
