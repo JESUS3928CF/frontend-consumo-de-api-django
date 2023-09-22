@@ -4,7 +4,7 @@ import AuthContext from '../context/AuthContext';
 const HomePage = () => {
     let [notes, setNotes] = useState([]);
 
-    let { authTokens, logoutUser } = useContext(AuthContext);
+    let { authTokens, logoutUser, user } = useContext(AuthContext);
 
     console.log('Tokens', authTokens);
 
@@ -33,6 +33,11 @@ const HomePage = () => {
 
     return (
         <div>
+            {/* Usando la función para cerrar sección */}
+
+                <p onClick={logoutUser}>Logout</p>
+
+            {user && <p> Hola {user.username} </p>}
             <p> Estas son tus notas </p>
 
             {/* Listando las notas en la vista*/}

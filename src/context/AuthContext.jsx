@@ -66,6 +66,8 @@ export const AuthProvider = ({ children }) => {
         setAuthTokens(null);
         setUser(null);
         localStorage.removeItem('authTokens');
+
+        
         navigate('/login');
     };
 
@@ -104,7 +106,7 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Ocurrió un error al intentar actualizar el token');
+            // alert('Ocurrió un error al intentar actualizar el token');
         }
 
         /// 2: Esto es para que no carge infinitamente
